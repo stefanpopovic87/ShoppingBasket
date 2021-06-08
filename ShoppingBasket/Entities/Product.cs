@@ -1,4 +1,4 @@
-﻿namespace ShoppingBasket
+﻿namespace ShoppingBasket.Entities
 {
     public class Product
     {

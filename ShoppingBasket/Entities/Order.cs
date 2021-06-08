@@ -1,6 +1,6 @@
-﻿namespace ShoppingBasket
+﻿namespace ShoppingBasket.Entities
 {
-    public class OrderDetails
+    public class Order
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
