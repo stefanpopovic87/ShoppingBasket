@@ -1,6 +1,5 @@
 ﻿using ShoppingBasket.Data;
 using ShoppingBasket.Entities;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ShoppingBasket.BusinessLogic
@@ -14,11 +13,11 @@ namespace ShoppingBasket.BusinessLogic
             _context = context;
         }
 
-        public void CalculateDiscout(List<Order> shoppingCart, List<Discount> discountList, int productId)
+        public void CalculateDiscout(int productId)
         {
-            Discount discount = discountList.FirstOrDefault(p => p.TargetProductId == productId || p.ConditionProductId == productId);
-            Order targetOrder = shoppingCart.FirstOrDefault(o => o.ProductId == discount.TargetProductId);
-            Order conditionalOrder = shoppingCart.FirstOrDefault(o => o.ProductId == discount.ConditionProductId);
+            Discount discount = _context.Discounts.FirstOrDefault(p => p.TargetProductId == productId || p.ConditionProductId == productId);
+            Order targetOrder = _context.Orders.FirstOrDefault(o => o.ProductId == discount.TargetProductId);
+            Order conditionalOrder = _context.Orders.FirstOrDefault(o => o.ProductId == discount.ConditionProductId);
             var discountProcentage = discount.DiscountProcentage;
             if (discount != null && targetOrder != null && conditionalOrder != null)
             {

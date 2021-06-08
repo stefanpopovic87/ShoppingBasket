@@ -12,8 +12,8 @@ namespace ShoppingBasket.Data
 
         public DataContext()
         {
-            Discounts = this.InitializeDiscountList();
-            Products = this.InitializeProductList();
+            Discounts = InitializeDiscountList();
+            Products = InitializeProductList();
             Orders = new List<Order>();
         }
 

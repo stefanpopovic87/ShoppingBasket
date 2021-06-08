@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShoppingBasket
+namespace ShoppingBasket.App
 {
     public class ShoppingBasketApp
     {
         private readonly DataContext _context;
-        private OrderController OrderController => new OrderController();
+        private OrderController OrderController => new OrderController(_context);
         private DiscountController DiscountController => new DiscountController(_context);
         public ShoppingBasketApp(DataContext context)
         {
@@ -72,10 +72,12 @@ namespace ShoppingBasket
 
             else
             {
-                var o = OrderController.CreateOrder(_context.Orders, productId, quantity, selectedProduct.UnitPrice);
+                var order = OrderController.CreateOrder(productId, quantity, selectedProduct.UnitPrice);
+                _context.Orders.Add(order);
+
             }
 
-            DiscountController.CalculateDiscout(_context.Orders, _context.Discounts, productId);
+            DiscountController.CalculateDiscout(productId);
             PrintHelper.AddedIntoShoppingCart(selectedProduct.ProductName);
         }
 
@@ -93,21 +95,20 @@ namespace ShoppingBasket
                 return;
             }
 
-            decimal totalOrderAmount = 0.00M;
-            totalOrderAmount = this._context.Orders.Sum(s => s.TotalAmount);
+            decimal totalOrderAmount = OrderController.CalculateTotalOrderAmount();
 
-            decimal totalOrderDiscount = 0.00M;
-            totalOrderDiscount = this._context.Orders.Sum(s => s.Discount);
+            decimal totalOrderDiscount = OrderController.CalculateTotalOrderDiscount();
 
-            var total = totalOrderAmount - totalOrderDiscount;
+            decimal total = OrderController.CalculateTotal();
+
             PrintHelper.PrintShoppingCart(shoppingCart);       
             PrintHelper.PrintAdditionalInformations(totalOrderAmount, totalOrderDiscount, total);
             PrintHelper.PrintShoppingCartOptions();
-            string opt2 = Console.ReadLine();
-            switch (opt2)
+            string opt = Console.ReadLine();
+            switch (opt)
             {
                 case "1":
-                    this._context.Orders.Clear();
+                    _context.Orders.Clear();
                     PrintHelper.ShoppingCartIsEmpty();
                     break;
                 case "2":
