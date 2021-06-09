@@ -1,5 +1,6 @@
 ﻿using ShoppingBasket.BusinessLogic;
 using ShoppingBasket.Data;
+using ShoppingBasket.Entities;
 using ShoppingBasket.Helpers;
 using ShoppingBasket.Models;
 using System;
@@ -28,7 +29,7 @@ namespace ShoppingBasket.App
                 {
                     case 1:
                         BrowseProducts();
-                        AddShoppingCart();
+                        AddOrderToShoppingCart();
                         break;
                     case 2:
                         ViewShoppingCart();
@@ -47,12 +48,13 @@ namespace ShoppingBasket.App
             PrintHelper.PrintPoducts(_context.Products);
         }
 
-        private void AddShoppingCart()
+        private void AddOrderToShoppingCart()
         {
+            Order order = new Order();
             PrintHelper.EnterProductId();
-            int productId = int.Parse(Console.ReadLine());
+            order.ProductId = int.Parse(Console.ReadLine());
 
-            var selectedProduct = _context.Products.FirstOrDefault(p => p.Id == productId);
+            var selectedProduct = _context.Products.FirstOrDefault(p => p.Id == order.ProductId);
 
             if (selectedProduct == null)
             {
@@ -61,23 +63,23 @@ namespace ShoppingBasket.App
             }
 
             PrintHelper.EnterQuantity();
-            int quantity = int.Parse(Console.ReadLine());
+            order.Quantity = int.Parse(Console.ReadLine());
 
-            var existingProductInShoppingCart = _context.Orders.FirstOrDefault(s => s.ProductId == productId);
+            var existingProductInShoppingCart = _context.Orders.FirstOrDefault(s => s.ProductId == order.ProductId);
 
             if (existingProductInShoppingCart != null)
             {
-                OrderController.UpdateOrder(existingProductInShoppingCart, quantity, selectedProduct.UnitPrice);
+                OrderController.UpdateOrder(order, existingProductInShoppingCart.Quantity);
             }
 
             else
             {
-                var order = OrderController.CreateOrder(productId, quantity, selectedProduct.UnitPrice);
+                OrderController.CreateOrder(order);
                 _context.Orders.Add(order);
 
             }
 
-            DiscountController.CalculateDiscout(productId);
+            DiscountController.CalculateDiscout(order.ProductId);
             PrintHelper.AddedIntoShoppingCart(selectedProduct.ProductName);
         }
 
@@ -87,7 +89,7 @@ namespace ShoppingBasket.App
 
             IEnumerable<ShoppingCartModel> shoppingCart = from s in _context.Orders
                                                           join p in _context.Products on s.ProductId equals p.Id
-                                                          select new ShoppingCartModel { ProductName = p.ProductName, UnitPrice = p.UnitPrice, QuantityOrder = s.QuantityOrder, Discount = s.Discount, TotalAmount = s.TotalAmount };
+                                                          select new ShoppingCartModel { ProductName = p.ProductName, UnitPrice = p.UnitPrice, QuantityOrder = s.Quantity, Discount = s.Discount, TotalAmount = s.TotalAmount };
 
             if (shoppingCart.ToList().Count == 0)
             {

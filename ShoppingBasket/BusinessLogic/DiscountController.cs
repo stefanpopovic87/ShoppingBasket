@@ -21,8 +21,8 @@ namespace ShoppingBasket.BusinessLogic
             var discountProcentage = discount.DiscountProcentage;
             if (discount != null && targetOrder != null && conditionalOrder != null)
             {
-                int conditionalQ = conditionalOrder.QuantityOrder / discount.ConditionalQuantity;
-                int discountFrequency = targetOrder.QuantityOrder < conditionalQ ? targetOrder.QuantityOrder : conditionalQ;
+                int conditionalQ = conditionalOrder.Quantity / discount.ConditionalQuantity;
+                int discountFrequency = targetOrder.Quantity < conditionalQ ? targetOrder.Quantity : conditionalQ;
                 decimal productUnitPrice = _context.Products.FirstOrDefault(p => p.Id == productId).UnitPrice;
                 targetOrder.Discount = discountFrequency * discount.DiscountProcentage * productUnitPrice;
             }
