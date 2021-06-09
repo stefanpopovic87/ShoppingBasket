@@ -79,7 +79,7 @@ namespace ShoppingBasket.App
 
             }
 
-            DiscountController.CalculateDiscout(order.ProductId);
+            var discount = DiscountController.CalculateDiscout(_context, order.ProductId);
             PrintHelper.AddedIntoShoppingCart(selectedProduct.ProductName);
         }
 
@@ -97,11 +97,11 @@ namespace ShoppingBasket.App
                 return;
             }
 
-            decimal totalOrderAmount = OrderController.CalculateTotalOrderAmount();
+            decimal totalOrderAmount = OrderController.CalculateTotalOrderAmount(_context.Orders);
 
-            decimal totalOrderDiscount = OrderController.CalculateTotalOrderDiscount();
+            decimal totalOrderDiscount = OrderController.CalculateTotalOrderDiscount(_context.Orders);
 
-            decimal total = OrderController.CalculateTotal();
+            decimal total = OrderController.CalculateTotal(_context.Orders);
 
             PrintHelper.PrintShoppingCart(shoppingCart);       
             PrintHelper.PrintAdditionalInformations(totalOrderAmount, totalOrderDiscount, total);

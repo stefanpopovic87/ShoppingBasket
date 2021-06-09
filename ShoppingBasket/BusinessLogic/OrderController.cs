@@ -1,5 +1,6 @@
 ﻿using ShoppingBasket.Data;
 using ShoppingBasket.Entities;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ShoppingBasket.BusinessLogic
@@ -27,19 +28,19 @@ namespace ShoppingBasket.BusinessLogic
             order.TotalAmount = order.Quantity * unitPrice;
         }
 
-        public decimal CalculateTotalOrderAmount()
+        public decimal CalculateTotalOrderAmount(List<Order> orders)
         {
-            return _context.Orders.Sum(s => s.TotalAmount);
+            return orders.Sum(s => s.TotalAmount);
         }
 
-        public decimal CalculateTotalOrderDiscount()
+        public decimal CalculateTotalOrderDiscount(List<Order> orders)
         {
-            return _context.Orders.Sum(s => s.Discount);
+            return orders.Sum(s => s.Discount);
         }
 
-        public decimal CalculateTotal()
+        public decimal CalculateTotal(List<Order> orders)
         {
-            return CalculateTotalOrderAmount() - CalculateTotalOrderDiscount();
+            return orders.Sum(s => s.TotalAmount) - orders.Sum(s => s.Discount);
         }
     }
 }
