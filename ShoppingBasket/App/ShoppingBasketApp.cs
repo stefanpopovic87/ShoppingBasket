@@ -65,11 +65,11 @@ namespace ShoppingBasket.App
             PrintHelper.EnterQuantity();
             order.Quantity = int.Parse(Console.ReadLine());
 
-            var existingProductInShoppingCart = _context.Orders.FirstOrDefault(s => s.ProductId == order.ProductId);
+            var existingOrder = _context.Orders.FirstOrDefault(s => s.ProductId == order.ProductId);
 
-            if (existingProductInShoppingCart != null)
+            if (existingOrder != null)
             {
-                OrderController.UpdateOrder(order, existingProductInShoppingCart.Quantity);
+                OrderController.UpdateOrder(existingOrder, order.Quantity);
             }
 
             else

@@ -13,11 +13,11 @@ namespace ShoppingBasket.BusinessLogic
             _context = context;
         }
 
-        public void UpdateOrder(Order order, int quantity)
+        public void UpdateOrder(Order existingOrder, int quantity)
         {
-            decimal unitPrice = (decimal)(_context.Products.FirstOrDefault(p => p.Id == order.ProductId)?.UnitPrice);
-            order.Quantity += quantity;
-            order.TotalAmount = order.Quantity * unitPrice;
+            decimal unitPrice = (decimal)(_context.Products.FirstOrDefault(p => p.Id == existingOrder.ProductId)?.UnitPrice);
+            existingOrder.Quantity += quantity;
+            existingOrder.TotalAmount = existingOrder.Quantity * unitPrice;
         }
 
         public void CreateOrder(Order order)
